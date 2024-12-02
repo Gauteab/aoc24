@@ -6,6 +6,7 @@ fun main() {
     val diffScore = input.first.sorted().zip(input.second.sorted()).sumOf { abs(it.first - it.second) }
     println(diffScore) // 1580061
 
-    val similarityScore = input.first.sumOf { left -> left * input.second.filter { right -> left == right }.size }
+    val rightCounts = input.second.groupingBy { it }.eachCount()
+    val similarityScore = input.first.sumOf { left -> left * (rightCounts[left] ?: 0)  }
     println(similarityScore) // 23046913
 }
