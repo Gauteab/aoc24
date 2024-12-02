@@ -14,6 +14,6 @@ fun List<Int>.isSafe2(): Boolean = indices.any { index ->
 
 fun main() {
     val input = File("input/day2.txt").readLines().map { it.split(" ").map { it.toInt() } }
-    println(input.filter { it.isSafe() }.size) // 252
-    println(input.filter { it.isSafe2() }.size) // 324
+    println(input.count { it.isSafe() }) // 252
+    println(input.count { it.isSafe2() }) // 324
 }
