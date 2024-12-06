@@ -2,6 +2,7 @@ package day6
 
 import java.awt.Point
 import java.io.File
+import kotlin.time.measureTime
 import kotlin.time.measureTimedValue
 
 operator fun Point.plus(other: Point): Point = Point(x + other.x, y + other.y)
@@ -15,7 +16,7 @@ private val directionVectors = mapOf(
     '^' to Point(0, 1),
 )
 
-fun part1(grid: List<String>): Int {
+fun part1(grid: List<String>): Set<Point> {
     val points = grid.flatMapIndexed { y, row -> row.mapIndexed { x, _ -> Point(x, y) } }
     var position = points.find { grid[it] in directionVectors }!!
     var direction = directionVectors[grid[position]]!!
@@ -23,7 +24,7 @@ fun part1(grid: List<String>): Int {
     while (true) {
         visited += position
         val ahead = position + direction
-        if (grid.getOrNull(ahead.y)?.getOrNull(ahead.x) == null) return visited.size
+        if (grid.getOrNull(ahead.y)?.getOrNull(ahead.x) == null) return visited
         if (grid[ahead] == '#') direction = direction.rotate()
         position += direction
     }
@@ -46,12 +47,12 @@ fun wouldCycle(startPosition: Point, startDirection: Point, newObstacle: Point, 
     }
 }
 
-fun part2(grid: List<String>): Int {
+fun part2(grid: List<String>, visited: Set<Point>): Int {
     val points = grid.flatMapIndexed { y, row -> row.mapIndexed { x, _ -> Point(x, y) } }
     val start  = points.find { grid[it] in directionVectors }!!
     val direction = directionVectors[grid[start]]!!
     val obstructionSites = mutableSetOf<Point>()
-    points.forEach { candidate ->
+    visited.forEach { candidate ->
         if (candidate != start && wouldCycle(start, direction, newObstacle = candidate, grid = grid)) {
             obstructionSites.add(candidate)
         }
@@ -60,8 +61,8 @@ fun part2(grid: List<String>): Int {
 }
 
 
-fun main() {
+fun main() = measureTime {
     val grid = File("input/day6.txt").readLines().reversed()
-    println(part1(grid)) // 5080
-    println(measureTimedValue { part2(grid) }) // 1919, 3.6s
-}
+    val visited = part1(grid).also { println(it.size) } // 5080
+    println(part2(grid, visited)) // 1919
+}.run(::println) // 750ms
