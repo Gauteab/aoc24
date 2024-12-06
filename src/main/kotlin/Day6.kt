@@ -1,9 +1,9 @@
 package day6
 
+import util.mapNotNullParallel
 import java.awt.Point
 import java.io.File
 import kotlin.time.measureTime
-import kotlin.time.measureTimedValue
 
 operator fun Point.plus(other: Point): Point = Point(x + other.x, y + other.y)
 fun Point.rotate() = Point(y, -x)
@@ -49,17 +49,14 @@ fun wouldCycle(startPosition: Point, startDirection: Point, newObstacle: Point, 
 
 fun part2(grid: List<String>, visited: Set<Point>): Int {
     val points = grid.flatMapIndexed { y, row -> row.mapIndexed { x, _ -> Point(x, y) } }
-    val start  = points.find { grid[it] in directionVectors }!!
+    val start = points.find { grid[it] in directionVectors }!!
     val direction = directionVectors[grid[start]]!!
-    val obstructionSites = mutableSetOf<Point>()
-    visited.forEach { candidate ->
-        if (candidate != start && wouldCycle(start, direction, newObstacle = candidate, grid = grid)) {
-            obstructionSites.add(candidate)
-        }
-    }
-    return obstructionSites.size
+    return visited.mapNotNullParallel { candidate ->
+        candidate
+            .takeIf { candidate != start }
+            ?.takeIf { wouldCycle(start, direction, candidate, grid) }
+    }.toSet().size
 }
-
 
 fun main() = measureTime {
     val grid = File("input/day6.txt").readLines().reversed()
