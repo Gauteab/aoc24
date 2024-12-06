@@ -51,18 +51,12 @@ fun part2(grid: List<String>): Int {
     var position = start
     var currentDirection = direction(grid[position])
     val obstructionSites = mutableSetOf<Point>()
-    while (true) {
-        val ahead = position + currentDirection
-        if (grid.getOrNull(ahead.y)?.getOrNull(ahead.x) == null) return obstructionSites.size
-        if (grid[ahead] == '#') {
-            currentDirection = currentDirection.rotate()
-            continue
+    points.forEach { point ->
+        if (point != start && wouldCycle(position, currentDirection, newObstacle = point, grid = grid)) {
+            obstructionSites.add(point)
         }
-        if (ahead != start && wouldCycle(position, currentDirection, newObstacle = ahead, grid = grid)) {
-            obstructionSites.add(ahead)
-        }
-        position += currentDirection
     }
+    return obstructionSites.size
 }
 
 
@@ -72,6 +66,5 @@ fun main() {
     part2(gridSample).also { println(it) }
     val grid = File("input/day6.txt").readLines().reversed()
     println(part1(grid)) // 5080
-    println(part2(grid)) // 1294, 1439 too low, 3442, 3237, 3236, 2034, 1983, 2042, 1990, 1993, 1990! wrong :(
-    // 2040?
+    println(part2(grid)) // 1919
 }
