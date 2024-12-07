@@ -13,8 +13,8 @@ fun main() = measureTime {
         .map { it.split(":").map { it.trim().split(" ") }.let { it[0][0].toLong() to it[1].map(String::toLong) } }
     val ops = listOf<(Long, Long) -> Long>(Long::plus, Long::times)
     val part1 = input.sumOf { (target, nums) -> target.takeIf { nums.isMatchFrom(target, nums[0], 1, ops) } ?: 0 }
-    val ops2 = ops + listOf { a, b -> a * (b.orderOf10()) + b }
+    val ops2 = ops + listOf { a, b -> a * b.orderOf10() + b }
     val part2 = input.sumOf { (target, nums) -> target.takeIf { nums.isMatchFrom(target, nums[0], 1, ops2) } ?: 0 }
     println(part1) // 267566105056
     println(part2) // 116094961956019
-}.print()
+}.print() // ~305ms
