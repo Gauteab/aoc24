@@ -11,23 +11,18 @@ fun main() {
         }
     }.toMutableList()
     var i = 0
-    var j = memory.size -1
+    var j = memory.size - 1
     while (i < memory.size && j >= 0 && i < j) {
         if (memory[i] != -1) {
             i++
-            continue
-        }
-        if (memory[j] == -1) {
+        } else if (memory[j] == -1) {
             j--
-            continue
+        } else {
+            memory[i++] = memory[j]
+            memory[j--] = -1
         }
-        val tmp = memory[i]
-        memory[i] = memory[j]
-        memory[j] = tmp
-        i++
-        j--
     }
-    val checksum:Long = memory.mapIndexed{ i, v -> if (v < 0L) 0L else i.toLong() * v.toLong() }.sum()
+    val checksum: Long = memory.mapIndexed { i, v -> if (v < 0L) 0L else i.toLong() * v.toLong() }.sum()
     // 1368861652 - overflow :(
     println(checksum) // 6310675819476
 }
